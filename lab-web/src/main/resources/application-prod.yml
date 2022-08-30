@@ -1,0 +1,43 @@
+server:
+  port: 8092
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123465
+    url: jdbc:mysql://localhost:3306/laboratory_v2?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+  redis:
+    database: 1
+    host: 127.0.0.1
+    port: 6379
+    password: 123465
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 200
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 0
+
+#redisson:
+#  # redis key前缀
+#  keyPrefix:
+#  # 线程池数量
+#  threads: 16
+#  # Netty线程池数量
+#  nettyThreads: 32
+#  # 单节点配置
+#  singleServerConfig:
+#    # 客户端名称
+#    clientName: ${lab.name}
+#    # 最小空闲连接数
+#    connectionMinimumIdleSize: 32
+#    # 连接池大小
+#    connectionPoolSize: 64
+#    # 连接空闲超时，单位：毫秒
+#    idleConnectionTimeout: 10000
+#    # 命令等待超时，单位：毫秒
+#    timeout: 3000
+#    # 发布和订阅连接池大小
+#    subscriptionConnectionPoolSize: 50

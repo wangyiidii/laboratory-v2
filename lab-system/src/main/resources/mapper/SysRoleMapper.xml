@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yiidii.lab.system.mapper.SysRoleMapper">
+
+    <resultMap type="cn.yiidii.lab.system.model.entity.SysUser" id="SysUser">
+        <id property="id" column="id"/>
+        <result property="uuid" column="uuid"/>
+        <result property="source" column="source"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="avatar"/>
+        <result property="email" column="email"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap type="cn.yiidii.lab.system.model.entity.SysPermission" id="SysPermission">
+        <id property="id" column="id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="desc" column="desc"/>
+        <result property="readOnly" column="readonly_"/>
+    </resultMap>
+
+    <resultMap type="cn.yiidii.lab.system.model.dto.SysPermissionInfoDTO" id="SysPermissionInfoDTO">
+        <id property="id" column="id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="desc" column="desc"/>
+        <result property="readOnly" column="readonly_"/>
+    </resultMap>
+
+    <resultMap type="cn.yiidii.lab.system.model.entity.SysMenu" id="SysMenu">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="path" column="path"/>
+        <result property="component" column="component"/>
+        <result property="icon" column="icon"/>
+        <result property="keepAlive" column="keep_alive"/>
+        <result property="redirect" column="redirect"/>
+        <result property="hidden" column="hidden"/>
+        <result property="target" column="target"/>
+        <result property="isDefault" column="is_default"/>
+    </resultMap>
+
+    <select id="selectRoleByUserId" resultType="cn.yiidii.lab.system.model.dto.SysRoleInfoDTO">
+        select r.id,
+               r.code,
+               r.name,
+               r.status,
+               r.create_time
+        from sys_role r
+                 left join sys_role_user ru on ru.role_id = r.id
+        where ru.user_id = #{uid}
+    </select>
+
+    <select id="selectRolePermissionByUserId" resultMap="SysPermissionInfoDTO">
+        select p.id, p.code, p.name, p.`desc`, p.readonly_
+        from sys_role r
+                 left join sys_role_user ru on ru.role_id = r.id
+                 left join sys_role_resource rr on rr.role_id = r.id and rr.type = 10
+                 right join sys_permission p on p.id = rr.res_id
+        where ru.user_id = #{uid}
+    </select>
+
+    <select id="selectUserByRoleId" resultType="cn.yiidii.lab.system.model.entity.SysUser" resultMap="SysUser">
+        select su.*
+        from (select sru.user_id as uid
+              from sys_role_user sru
+                       left join sys_role sr on sr.id = sru.role_id
+              where sru.role_id = #{roleId}) tmp
+                 left join sys_user su on su.id = tmp.uid
+    </select>
+
+    <select id="selectMenuByRoleId" resultType="cn.yiidii.lab.system.model.entity.SysMenu" resultMap="SysMenu">
+        SELECT sm.*
+        FROM (SELECT srr.res_id AS id
+              FROM sys_role_resource srr
+                       LEFT JOIN sys_role sr ON sr.id = srr.role_id
+              WHERE srr.role_id = #{roleId}
+                AND srr.type = 20) tmp
+                 LEFT JOIN sys_menu sm ON sm.id = tmp.id;
+    </select>
+
+    <select id="selectPermissionByRoleId" resultType="cn.yiidii.lab.system.model.entity.SysPermission">
+        SELECT sp.*
+        FROM (SELECT srr.res_id AS pid
+              FROM sys_role_resource srr
+                       LEFT JOIN sys_role sr ON sr.id = srr.role_id
+              WHERE srr.role_id = #{roleId}
+                AND srr.type = 10) tmp
+                 LEFT JOIN sys_permission sp ON sp.id = tmp.pid;
+    </select>
+
+</mapper>

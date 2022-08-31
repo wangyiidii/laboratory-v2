@@ -1,4 +1,4 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.body;
 
 import cn.yiidii.web.annotation.Add;
 import cn.yiidii.web.annotation.Update;

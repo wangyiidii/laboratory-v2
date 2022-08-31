@@ -1,7 +1,7 @@
 package cn.yiidii.lab.system.service.impl;
 
 import cn.yiidii.lab.system.model.dto.SysUserInfoDTO;
-import cn.yiidii.lab.system.model.dto.ThirdPartyLoginBody;
+import cn.yiidii.lab.system.model.body.ThirdPartyLoginBody;
 import cn.yiidii.lab.system.model.enums.SysExceptionCode;
 import cn.yiidii.lab.system.model.enums.UserSource;
 import cn.yiidii.lab.system.service.ISysUserService;

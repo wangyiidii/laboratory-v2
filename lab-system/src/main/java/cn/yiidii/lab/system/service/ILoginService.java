@@ -1,6 +1,5 @@
 package cn.yiidii.lab.system.service;
 
-import cn.yiidii.lab.system.model.dto.LoginSuccessVO;
 import cn.yiidii.web.support.LoginUser;
 
 /**

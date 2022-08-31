@@ -4,8 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.bean.BeanUtil;
 import cn.yiidii.lab.system.model.dto.SysPermissionInfoDTO;
-import cn.yiidii.lab.system.model.dto.SysPermissionSaveBody;
-import cn.yiidii.lab.system.model.entity.SysMenu;
+import cn.yiidii.lab.system.model.body.SysPermissionSaveBody;
 import cn.yiidii.lab.system.model.entity.SysPermission;
 import cn.yiidii.lab.system.service.ISysPermissionService;
 import cn.yiidii.web.R;
@@ -14,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**

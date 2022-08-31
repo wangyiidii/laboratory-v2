@@ -1,5 +1,6 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.vo;
 
+import cn.yiidii.lab.system.model.dto.SysUserInfoDTO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

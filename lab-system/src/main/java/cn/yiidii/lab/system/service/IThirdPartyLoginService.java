@@ -1,7 +1,7 @@
 package cn.yiidii.lab.system.service;
 
 import cn.yiidii.lab.system.model.dto.SysUserInfoDTO;
-import cn.yiidii.lab.system.model.dto.ThirdPartyLoginBody;
+import cn.yiidii.lab.system.model.body.ThirdPartyLoginBody;
 
 /**
  * OAuthService

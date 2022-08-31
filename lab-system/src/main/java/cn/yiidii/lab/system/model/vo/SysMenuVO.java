@@ -1,12 +1,9 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.vo;
 
 import cn.yiidii.base.domain.entity.TreeEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import lombok.experimental.Accessors;
 
 /**
  * @author ed w

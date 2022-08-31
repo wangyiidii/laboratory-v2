@@ -2,10 +2,10 @@ package cn.yiidii.web.controller.admin;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.yiidii.lab.system.model.dto.ChangeStatusBody;
-import cn.yiidii.lab.system.model.dto.ResetUserPasswordBody;
-import cn.yiidii.lab.system.model.dto.SysUserQueryParam;
-import cn.yiidii.lab.system.model.dto.SysUserSaveBody;
+import cn.yiidii.lab.system.model.body.ChangeStatusBody;
+import cn.yiidii.lab.system.model.body.ResetUserPasswordBody;
+import cn.yiidii.lab.system.model.vo.SysUserQueryParam;
+import cn.yiidii.lab.system.model.body.SysUserSaveBody;
 import cn.yiidii.lab.system.service.ISysUserService;
 import cn.yiidii.web.PageQuery;
 import cn.yiidii.web.R;

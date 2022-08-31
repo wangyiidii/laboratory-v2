@@ -2,7 +2,7 @@ package cn.yiidii.lab.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.yiidii.lab.system.mapper.SysPermissionMapper;
-import cn.yiidii.lab.system.model.dto.SysPermissionSaveBody;
+import cn.yiidii.lab.system.model.body.SysPermissionSaveBody;
 import cn.yiidii.lab.system.model.entity.SysPermission;
 import cn.yiidii.lab.system.model.entity.SysRoleResource;
 import cn.yiidii.lab.system.model.enums.ResourceType;

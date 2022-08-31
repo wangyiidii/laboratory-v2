@@ -11,11 +11,14 @@ import cn.yiidii.base.util.TreeUtil;
 import cn.yiidii.lab.system.mapper.SysMenuMapper;
 import cn.yiidii.lab.system.mapper.SysRoleMapper;
 import cn.yiidii.lab.system.mapper.SysUserMapper;
-import cn.yiidii.lab.system.model.constant.SysConst;
+import cn.yiidii.lab.system.model.body.SysUserSaveBody;
 import cn.yiidii.lab.system.model.dto.*;
 import cn.yiidii.lab.system.model.entity.SysMenu;
 import cn.yiidii.lab.system.model.entity.SysUser;
 import cn.yiidii.lab.system.model.enums.UserSource;
+import cn.yiidii.lab.system.model.vo.MetaVO;
+import cn.yiidii.lab.system.model.vo.RouterVo;
+import cn.yiidii.lab.system.model.vo.SysUserQueryParam;
 import cn.yiidii.lab.system.service.ISysUserService;
 import cn.yiidii.web.PageQuery;
 import cn.yiidii.web.satoken.LoginHelper;
@@ -172,7 +175,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         List<RouterVo> routerVos = sysMenus.stream().map(m -> {
             RouterVo routerVo = BeanUtil.toBean(m, RouterVo.class);
-            routerVo.setMeta(new MetaVo(m.getName(), m.getIcon()));
+            routerVo.setMeta(new MetaVO(m.getName(), m.getIcon()));
             routerVo.setStatus(null);
             routerVo.setCreateTime(null);
             routerVo.setCreatedBy(null);

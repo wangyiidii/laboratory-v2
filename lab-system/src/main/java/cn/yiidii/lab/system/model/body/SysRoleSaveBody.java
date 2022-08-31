@@ -1,4 +1,4 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.body;
 
 import cn.yiidii.lab.system.model.constant.SysConst;
 import cn.yiidii.web.annotation.Update;

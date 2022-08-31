@@ -1,6 +1,6 @@
 package cn.yiidii.lab.system.service;
 
-import cn.yiidii.lab.system.model.dto.RegisterBody;
+import cn.yiidii.lab.system.model.body.RegisterBody;
 
 /**
  * 注册

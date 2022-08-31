@@ -1,6 +1,6 @@
 package cn.yiidii.lab.system.service;
 
-import cn.yiidii.lab.system.model.dto.SysPermissionSaveBody;
+import cn.yiidii.lab.system.model.body.SysPermissionSaveBody;
 import cn.yiidii.lab.system.model.entity.SysPermission;
 import com.baomidou.mybatisplus.extension.service.IService;
 

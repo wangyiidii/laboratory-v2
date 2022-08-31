@@ -1,4 +1,4 @@
-package cn.yiidii.apiplatform.model.dto;
+package cn.yiidii.apiplatform.model.body;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

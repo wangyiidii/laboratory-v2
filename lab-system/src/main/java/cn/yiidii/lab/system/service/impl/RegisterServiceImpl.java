@@ -5,7 +5,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.yiidii.base.domain.enums.Status;
 import cn.yiidii.lab.system.model.constant.SysConst;
-import cn.yiidii.lab.system.model.dto.RegisterBody;
+import cn.yiidii.lab.system.model.body.RegisterBody;
 import cn.yiidii.lab.system.model.entity.SysUser;
 import cn.yiidii.lab.system.model.enums.SysExceptionCode;
 import cn.yiidii.lab.system.model.enums.UserSource;

@@ -1,11 +1,10 @@
-package cn.yiidii.web.controller.aplplatform;
+package cn.yiidii.web.controller.apiplatform;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.base.annotation.RateLimiter;
-import cn.yiidii.base.domain.enums.LimitType;
 import cn.yiidii.base.exception.BizException;
 import cn.yiidii.base.util.JsonUtils;
 import cn.yiidii.web.R;

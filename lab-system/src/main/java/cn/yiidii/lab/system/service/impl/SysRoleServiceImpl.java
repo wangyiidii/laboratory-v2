@@ -2,13 +2,16 @@ package cn.yiidii.lab.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.yiidii.base.domain.enums.Status;
-import cn.yiidii.lab.system.mapper.SysRoleUserMapper;
+import cn.yiidii.lab.system.model.body.SysRoleSaveBody;
 import cn.yiidii.lab.system.model.dto.*;
 import cn.yiidii.lab.system.model.entity.*;
 import cn.yiidii.lab.system.model.enums.ResourceType;
 import cn.yiidii.lab.system.model.enums.SysExceptionCode;
+import cn.yiidii.lab.system.model.vo.SysMenuVO;
+import cn.yiidii.lab.system.model.vo.SysPermissionVO;
+import cn.yiidii.lab.system.model.vo.SysRoleQueryParam;
+import cn.yiidii.lab.system.model.vo.SysUserVO;
 import cn.yiidii.lab.system.service.*;
 import cn.yiidii.lab.system.mapper.SysRoleMapper;
 import cn.yiidii.web.PageQuery;

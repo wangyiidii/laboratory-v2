@@ -9,9 +9,14 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import cn.yiidii.apiplatform.model.dto.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.body.CookieBody;
+import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
+import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.base.exception.BizException;
+import cn.yiidii.base.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -26,6 +31,7 @@ import java.util.Objects;
  * @author ed w
  * @since 1.0
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SignInService {
@@ -110,6 +116,39 @@ public class SignInService {
         if (!success) {
             throw new BizException(bandDataResp.getStr("message"));
         }
+    }
+
+    public TencentVideoSignInResponseDTO tencentVideo(CookieBody cookieBody) {
+        HttpResponse response = HttpRequest.get("https://vip.video.qq.com/fcgi-bin/comm_cgi?name=hierarchical_task_system&cmd=2")
+                .cookie(cookieBody.getCookie())
+                .execute();
+        String body = response.body()
+                .replace("QZOutputJson=(", "")
+                .replace(");", "");
+        if (StrUtil.isEmpty(body)) {
+            throw new BizException(ApiExceptionCode.COOKIE_EXPIRED);
+        }
+        TencentVideoSignInResponseDTO responseDTO = JsonUtils.parseObject(body, TencentVideoSignInResponseDTO.class);
+        int ret = responseDTO.getRet();
+        switch (ret) {
+            case 0: {
+                // 签到成功
+                return responseDTO;
+            }
+            case -2002: {
+                // 今日已签到
+                throw new BizException(ApiExceptionCode.ALREADY_SIGN_IN);
+            }
+            case -2007: {
+                // 不是vip
+                throw new BizException(ApiExceptionCode.UN_TENCENT_VIP);
+            }
+            default: {
+                log.info(JsonUtils.toJsonString(responseDTO));
+                throw new BizException("签到错误");
+            }
+        }
+
     }
 
 }

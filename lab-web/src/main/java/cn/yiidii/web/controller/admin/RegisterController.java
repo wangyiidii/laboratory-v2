@@ -1,14 +1,8 @@
 package cn.yiidii.web.controller.admin;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.yiidii.lab.system.model.dto.LoginBody;
-import cn.yiidii.lab.system.model.dto.LoginSuccessVO;
-import cn.yiidii.lab.system.model.dto.RegisterBody;
-import cn.yiidii.lab.system.model.enums.LoginChannel;
-import cn.yiidii.lab.system.service.ILoginService;
+import cn.yiidii.lab.system.model.body.RegisterBody;
 import cn.yiidii.lab.system.service.IRegisterService;
 import cn.yiidii.web.R;
-import cn.yiidii.base.exception.BizException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,6 @@
 package cn.yiidii.web.controller.admin;
 
-import cn.yiidii.lab.system.model.dto.ThirdPartyLoginBody;
+import cn.yiidii.lab.system.model.body.ThirdPartyLoginBody;
 import cn.yiidii.lab.system.service.IThirdPartyLoginService;
 import cn.yiidii.web.R;
 import com.xkcoding.justauth.AuthRequestFactory;

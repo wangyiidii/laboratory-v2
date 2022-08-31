@@ -1,4 +1,4 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.vo;
 
 import cn.yiidii.base.domain.entity.TreeEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -46,7 +46,7 @@ public class RouterVo extends TreeEntity<RouterVo, Long> {
     /**
      * 其他元素
      */
-    private MetaVo meta;
+    private MetaVO meta;
 
 
 }

@@ -1,4 +1,4 @@
-package cn.yiidii.lab.system.model.dto;
+package cn.yiidii.lab.system.model.body;
 
 import lombok.Data;
 

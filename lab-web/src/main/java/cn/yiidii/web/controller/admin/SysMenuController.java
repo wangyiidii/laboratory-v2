@@ -3,7 +3,7 @@ package cn.yiidii.web.controller.admin;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.bean.BeanUtil;
 import cn.yiidii.base.util.TreeUtil;
-import cn.yiidii.lab.system.model.dto.SysMenuSaveBody;
+import cn.yiidii.lab.system.model.body.SysMenuSaveBody;
 import cn.yiidii.lab.system.model.entity.SysMenu;
 import cn.yiidii.lab.system.service.ISysMenuService;
 import cn.yiidii.web.R;

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ApiExceptionCode implements BaseExceptionCode {
 
-    COOKIE_EXPIRED(200001, "Cookie已失效"),
+    COOKIE_EXPIRED(200001, "登录状态已失效"),
     ALREADY_SIGN_IN(200002, "今日已签到"),
     UN_TENCENT_VIP(200003, "不是vip会员"),
 

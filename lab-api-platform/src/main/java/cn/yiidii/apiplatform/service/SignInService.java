@@ -4,13 +4,14 @@ import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import cn.yiidii.apiplatform.model.body.CookieBody;
 import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.base.exception.BizException;
@@ -118,9 +119,15 @@ public class SignInService {
         }
     }
 
-    public TencentVideoSignInResponseDTO tencentVideo(CookieBody cookieBody) {
+    /**
+     * 腾讯视频签到
+     *
+     * @param cookie cookie
+     * @return {@link TencentVideoSignInResponseDTO}
+     */
+    public TencentVideoSignInResponseDTO tencentVideo(String cookie) {
         HttpResponse response = HttpRequest.get("https://vip.video.qq.com/fcgi-bin/comm_cgi?name=hierarchical_task_system&cmd=2")
-                .cookie(cookieBody.getCookie())
+                .cookie(cookie)
                 .execute();
         String body = response.body()
                 .replace("QZOutputJson=(", "")
@@ -151,4 +158,40 @@ public class SignInService {
 
     }
 
+    /**
+     * 时光相册签到
+     *
+     * @param xTtToken xTtToken
+     * @return {@link EverPhotoSignInResponseDTO}
+     */
+    public EverPhotoSignInResponseDTO everPhoto(String xTtToken) {
+        HttpResponse response = HttpRequest.post("https://openapi.everphoto.cn/sf/3/v4/PostCheckIn?aid=33")
+                .header(Header.USER_AGENT, "EverPhoto/4.5.1 (iOS;4.5.1.1;iPhone11,2;15.6.1;App Store)")
+                .header("x-Tt-Token", xTtToken)
+                .header(Header.CONTENT_TYPE, ContentType.JSON.getValue())
+                .header("sdk-version", "2")
+                .execute();
+        EverPhotoSignInResponseDTO responseDTO = JsonUtils.parseObject(response.body(), EverPhotoSignInResponseDTO.class);
+
+        // code不为0，响应失败
+        Integer bizRetCode = responseDTO.getCode();
+        if (!bizRetCode.equals(0)) {
+            switch (bizRetCode) {
+                case 20104: {
+                    throw new BizException(ApiExceptionCode.COOKIE_EXPIRED);
+                }
+                default: {
+                    throw new BizException(responseDTO.getMessage());
+                }
+            }
+
+        }
+
+        // data.checkin_result为false, 今日已签到
+        if (!responseDTO.getData().isCheckinResult()) {
+            throw new BizException(ApiExceptionCode.ALREADY_SIGN_IN);
+        }
+
+        return responseDTO;
+    }
 }

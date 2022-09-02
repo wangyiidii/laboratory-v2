@@ -1,6 +1,5 @@
 package cn.yiidii.apiplatform.model.body;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 /**
@@ -13,4 +12,5 @@ import lombok.Data;
 public class CookieBody {
 
     private String cookie;
+    private String token;
 }

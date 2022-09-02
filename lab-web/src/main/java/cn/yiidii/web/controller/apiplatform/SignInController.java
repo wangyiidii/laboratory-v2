@@ -1,16 +1,18 @@
 package cn.yiidii.web.controller.apiplatform;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.yiidii.apiplatform.model.body.CookieBody;
+import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.service.SignInService;
-import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
-import cn.yiidii.base.core.service.ConfigService;
 import cn.yiidii.web.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * SignInController
@@ -28,8 +30,8 @@ public class SignInController {
     /**
      * 小米运动刷新步数
      *
-     * @param body body
-     * @return R
+     * @param body {@link CookieBody}
+     * @return {@link R}
      */
     @PostMapping("/mi-step")
     public R<?> miStep(@RequestBody @Validated MiBrushStepBody body) {
@@ -37,10 +39,40 @@ public class SignInController {
         return R.ok(null, StrUtil.format("成功刷新{}步", body.getStep()));
     }
 
+    /**
+     * 腾讯视频签到
+     *
+     * @param body {@link CookieBody}
+     * @return {@link R}
+     */
     @PostMapping("/tencent-video")
-    public R<?> testConfig(@RequestBody CookieBody cookieBody) {
-        TencentVideoSignInResponseDTO ret = singInService.tencentVideo(cookieBody);
-        return R.ok(null, StrUtil.format("签到成功, 获取{}积分", ret.getCheckinScore()));
+    public R<?> tencentVideo(@RequestBody CookieBody body) {
+        String cookie = body.getCookie();
+        if (StrUtil.isBlank(cookie)) {
+            throw new IllegalArgumentException("cookie不能为空");
+        }
+
+        TencentVideoSignInResponseDTO ret = singInService.tencentVideo(body.getCookie());
+        return R.ok(null, StrUtil.format("签到成功, 获取{}V力值", ret.getCheckinScore()));
+    }
+
+    /**
+     * 时光相册签到
+     *
+     * @param body {@link CookieBody}
+     * @return {@link R}
+     */
+    @PostMapping("/ever-photo")
+    public R<?> everPhoto(@RequestBody CookieBody body) {
+        String xTtToken = body.getToken();
+        if (StrUtil.isBlank(xTtToken)) {
+            throw new IllegalArgumentException("token不能为空");
+        }
+
+        EverPhotoSignInResponseDTO resp = singInService.everPhoto(body.getToken());
+        Integer continuity = resp.getData().getContinuity();
+        Long totalReward = resp.getData().getTotalReward();
+        return R.ok(null, StrUtil.format("签到成功，当前连续签到{}天，共获取{}MB空间", continuity, totalReward / 1024 / 1024));
     }
 
 }

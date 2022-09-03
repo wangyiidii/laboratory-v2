@@ -11,6 +11,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.dto.DingDongSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
@@ -193,5 +194,33 @@ public class SignInService {
         }
 
         return responseDTO;
+    }
+
+    /**
+     * 叮咚买菜签到
+     *
+     * @param cookie    cookie
+     * @return  {@link DingDongSignInResponseDTO}
+     */
+    public DingDongSignInResponseDTO dingDong(String cookie) {
+        HttpResponse response = HttpRequest.get("https://maicai.api.ddxq.mobi/point/home?station_id=0")
+                .cookie(cookie)
+                .execute();
+        DingDongSignInResponseDTO signRet = JsonUtils.parseObject(response.body(), DingDongSignInResponseDTO.class);
+        Integer code = signRet.getCode();
+        switch (code) {
+            case 0: {
+                if (signRet.getData().getUserSign().getIsTodaySign()) {
+                    throw new BizException(ApiExceptionCode.ALREADY_SIGN_IN);
+                }
+                return signRet;
+            }
+            case 1111: {
+                throw new BizException(ApiExceptionCode.COOKIE_EXPIRED);
+            }
+            default: {
+                throw new BizException(signRet.getMsg());
+            }
+        }
     }
 }

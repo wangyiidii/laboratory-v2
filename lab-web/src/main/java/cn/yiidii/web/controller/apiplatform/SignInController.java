@@ -3,6 +3,7 @@ package cn.yiidii.web.controller.apiplatform;
 import cn.hutool.core.util.StrUtil;
 import cn.yiidii.apiplatform.model.body.CookieBody;
 import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
+import cn.yiidii.apiplatform.model.dto.DingDongSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.service.SignInService;
@@ -81,6 +82,25 @@ public class SignInController {
         Integer continuity = resp.getData().getContinuity();
         Long totalReward = resp.getData().getTotalReward();
         return R.ok(null, StrUtil.format("签到成功，当前连续签到{}天，共获取{}MB空间", continuity, totalReward / 1024 / 1024));
+    }
+
+    /**
+     * 叮咚买菜签到
+     *
+     * @param body {@link CookieBody}
+     * @return {@link R}
+     */
+    @ApiPostNotify
+    @ApiOperation("叮咚买菜签到")
+    @PostMapping("/dingdong")
+    public R<?> dingDong(@RequestBody CookieBody body) {
+        String cookie = body.getCookie();
+        if (StrUtil.isBlank(cookie)) {
+            throw new IllegalArgumentException("cookie不能为空");
+        }
+
+        DingDongSignInResponseDTO resp = singInService.dingDong(cookie);
+        return R.ok(null, StrUtil.format("签到成功, 获取{}积分", resp.getData().getPointNum()));
     }
 
 }

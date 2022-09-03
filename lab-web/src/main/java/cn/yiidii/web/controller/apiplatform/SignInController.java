@@ -6,7 +6,9 @@ import cn.yiidii.apiplatform.model.body.MiBrushStepBody;
 import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.service.SignInService;
+import cn.yiidii.base.annotation.ApiPostNotify;
 import cn.yiidii.web.R;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +35,8 @@ public class SignInController {
      * @param body {@link CookieBody}
      * @return {@link R}
      */
+    @ApiPostNotify
+    @ApiOperation("小米运动刷新步数")
     @PostMapping("/mi-step")
     public R<?> miStep(@RequestBody @Validated MiBrushStepBody body) {
         singInService.miStep(body);
@@ -45,6 +49,8 @@ public class SignInController {
      * @param body {@link CookieBody}
      * @return {@link R}
      */
+    @ApiPostNotify
+    @ApiOperation("腾讯视频签到")
     @PostMapping("/tencent-video")
     public R<?> tencentVideo(@RequestBody CookieBody body) {
         String cookie = body.getCookie();
@@ -62,6 +68,8 @@ public class SignInController {
      * @param body {@link CookieBody}
      * @return {@link R}
      */
+    @ApiPostNotify
+    @ApiOperation("时光相册签到")
     @PostMapping("/ever-photo")
     public R<?> everPhoto(@RequestBody CookieBody body) {
         String xTtToken = body.getToken();

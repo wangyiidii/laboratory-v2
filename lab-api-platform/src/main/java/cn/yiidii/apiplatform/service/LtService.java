@@ -151,7 +151,6 @@ public class LtService {
             } else {
                 currGeneric = currGeneric.add(use);
             }
-            currSum = currSum.add(use);
         }
 
         // last

@@ -15,10 +15,10 @@
 
     <!-- 控制台输出 -->
     <appender name="file_console" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/sys-console.log</file>
+        <file>${log.path}/lab-console.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件名格式 -->
-            <fileNamePattern>${log.path}/sys-console.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/lab-console.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大 1天 -->
             <maxHistory>1</maxHistory>
         </rollingPolicy>
@@ -34,11 +34,11 @@
 
     <!-- 系统日志输出 -->
     <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/sys-info.log</file>
+        <file>${log.path}/lab-info.log</file>
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件名格式 -->
-            <fileNamePattern>${log.path}/sys-info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/lab-info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 60天 -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
@@ -56,11 +56,11 @@
     </appender>
 
     <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.path}/sys-error.log</file>
+        <file>${log.path}/lab-error.log</file>
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志文件名格式 -->
-            <fileNamePattern>${log.path}/sys-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/lab-error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 60天 -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>

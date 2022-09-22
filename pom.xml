@@ -11,6 +11,7 @@
         <module>lab-system</module>
         <module>lab-web</module>
         <module>lab-api-platform</module>
+        <module>lab-job</module>
     </modules>
 
     <properties>
@@ -23,6 +24,11 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
         </dependency>
     </dependencies>
 
@@ -44,6 +50,11 @@
             <dependency>
                 <groupId>cn.yidii</groupId>
                 <artifactId>lab-api-platform</artifactId>
+                <version>${lab.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.yidii</groupId>
+                <artifactId>lab-job</artifactId>
                 <version>${lab.version}</version>
             </dependency>
         </dependencies>

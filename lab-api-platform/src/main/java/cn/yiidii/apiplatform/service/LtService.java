@@ -61,6 +61,11 @@ public class LtService {
                 .cookie(cookie)
                 .body("externalSources=&contactCode=&serviceType=&saleChannel=&channelCode=&duanlianjieabc=&ticket=&ticketPhone=&ticketChannel=&userNumber=&language=")
                 .execute();
+        String body = response.body();
+        if (StrUtil.equals(body, "999998")) {
+            throw new BizException(ApiExceptionCode.COOKIE_EXPIRED_LT);
+        }
+
         return JsonUtils.parseObject(response.body(), LtUsageInfoResponseDTO.class);
     }
 
@@ -113,6 +118,12 @@ public class LtService {
 
     }
 
+    /**
+     * 从联通cookie里面手机号码
+     *
+     * @param cookie 联通cookie
+     * @return 手机号码
+     */
     private String getPhoneNumberFormCookie(String cookie) {
         Map<String, String> cookieMap = ServletUtil.getCookieMap(cookie);
         String cMobile = cookieMap.getOrDefault("c_mobile", "");

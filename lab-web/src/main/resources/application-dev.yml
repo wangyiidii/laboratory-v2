@@ -11,7 +11,7 @@ spring:
     database: 1
     host: 127.0.0.1
     port: 6379
-    password: 123465
+#    password: 123465
     timeout: 10s
     lettuce:
       pool:
@@ -27,6 +27,17 @@ justauth:
       client-id: 41367d440b7cc673691273e7d2182c0cb065c83e07a8a0a4abc3e1c213555a44
       client-secret: 696287623efa60478b4a63eef55ab807b93403fc645c345410d61fc0795e93a6
       redirect-uri: http://127.0.0.1:8080/oauth/GITEE/callback
+
+powerjob:
+  worker:
+    akka-port: 27777
+    app-name: lab-v2-dev
+    server-address: 127.0.0.1:7700
+    store-strategy: disk
+    max-result-length: 4096
+    max-appended-wf-context-length: 4096
+    enable-test-mode: true
+
 
 #redisson:
 #  # redis key前缀

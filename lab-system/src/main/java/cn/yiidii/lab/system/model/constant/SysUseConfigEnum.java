@@ -12,7 +12,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum SysUseConfigEnum implements IEnum {
 
-    CK_TENCENT_VIDEO("ck_tencent_video", "腾讯视频Cookie");
+    CK_TENCENT_VIDEO("ck_tencent_video", "腾讯视频Cookie"),
+    CK_DINGDONG("ck_ding_dong", "叮咚买菜Cookie"),
+    ;
 
     private String key;
     private String name;

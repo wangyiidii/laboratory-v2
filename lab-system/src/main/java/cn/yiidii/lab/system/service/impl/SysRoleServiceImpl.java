@@ -94,6 +94,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
     }
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteRole(Long id) {
         Long count = roleUserService.getBaseMapper()

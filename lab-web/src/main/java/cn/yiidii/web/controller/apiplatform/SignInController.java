@@ -12,10 +12,9 @@ import cn.yiidii.web.R;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * SignInController
@@ -101,6 +100,13 @@ public class SignInController {
 
         DingDongSignInResponseDTO resp = singInService.dingDong(cookie);
         return R.ok(null, StrUtil.format("签到成功, 获取{}积分", resp.getData().getPointNum()));
+    }
+
+    @ApiPostNotify
+    @ApiOperation("iios签到")
+    @PostMapping("/iios")
+    public R<?> iios(@RequestBody Map<String, String> body) {
+        return singInService.iios(body.get("email"), body.get("password"));
     }
 
 }

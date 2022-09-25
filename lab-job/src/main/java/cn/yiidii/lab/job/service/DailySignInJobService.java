@@ -2,10 +2,12 @@ package cn.yiidii.lab.job.service;
 
 import cn.hutool.core.util.StrUtil;
 import cn.yiidii.apiplatform.model.dto.DingDongSignInResponseDTO;
+import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.service.SignInService;
 import cn.yiidii.base.domain.enums.Status;
 import cn.yiidii.base.util.ContextUtil;
+import cn.yiidii.base.util.JsonUtils;
 import cn.yiidii.lab.job.model.enums.DailySignInJobEnum;
 import cn.yiidii.lab.job.model.exception.UserConfigNotFountException;
 import cn.yiidii.lab.system.model.constant.SysUseConfigEnum;
@@ -13,11 +15,14 @@ import cn.yiidii.lab.system.model.entity.SysUser;
 import cn.yiidii.lab.system.model.entity.SysUserConfig;
 import cn.yiidii.lab.system.service.ISysUserConfigService;
 import cn.yiidii.lab.system.service.ISysUserService;
+import cn.yiidii.web.R;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import tech.powerjob.worker.log.OmsLogger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -26,6 +31,7 @@ import java.util.Objects;
  * @author ed w
  * @date 2022/9/23 10:11
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DailySignInJobService {
@@ -51,6 +57,7 @@ public class DailySignInJobService {
             } catch (UserConfigNotFountException e) {
                 notConfigured++;
             } catch (Exception e) {
+                log.warn("[{}] e: {}", jobEnum.getDesc(), e.getMessage());
                 fail++;
             }
         }
@@ -64,7 +71,7 @@ public class DailySignInJobService {
         switch (jobEnum) {
             // 腾讯视频签到
             case TENCENT_VIDEO: {
-                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.CK_TENCENT_VIDEO.getKey());
+                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.SIGNIN_CK_TENCENT_VIDEO.getKey());
                 if (Objects.isNull(config)) {
                     omsLogger.debug("[{}] {}未配置腾讯视频Cookie", jobEnum.getDesc(), u.getUsername());
                     throw new UserConfigNotFountException();
@@ -81,20 +88,57 @@ public class DailySignInJobService {
 
             // 叮咚买菜
             case DINGDONG: {
-                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.CK_DINGDONG.getKey());
+                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.SIGNIN_CK_DINGDONG.getKey());
                 if (Objects.isNull(config)) {
                     omsLogger.debug("[{}] {}未配置叮咚买菜Cookie", jobEnum.getDesc(), u.getUsername());
                     throw new UserConfigNotFountException();
                 }
                 try {
                     DingDongSignInResponseDTO ret = signInService.dingDong(config.getValue());
-                    omsLogger.info("[{}] 签到成功, 获取{}积分", jobEnum.getDesc(), u.getUsername(), ret.getData().getPointNum());
+                    omsLogger.info("[{}] {}签到成功, 获取{}积分", jobEnum.getDesc(), u.getUsername(), ret.getData().getPointNum());
                 } catch (Exception e) {
                     omsLogger.warn("[{}] {}签到异常: {}", jobEnum.getDesc(), u.getUsername(), e.getMessage());
                     throw e;
                 }
                 break;
             }
+
+            // 时光相册
+            case EVER_PHOTO: {
+                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.SIGNIN_CK_EVER_PHOTO.getKey());
+                if (Objects.isNull(config)) {
+                    omsLogger.debug("[{}] {}未配置时光相册Cookie", jobEnum.getDesc(), u.getUsername());
+                    throw new UserConfigNotFountException();
+                }
+                try {
+                    EverPhotoSignInResponseDTO ret = signInService.everPhoto(config.getValue());
+                    omsLogger.info("[{}] {}签到成功，{}当前连续签到{}天，共获取{}MB空间", jobEnum.getDesc(), u.getUsername(),
+                            ret.getData().getContinuity(), ret.getData().getTotalReward() / 1024 / 1024);
+                } catch (Exception e) {
+                    omsLogger.warn("[{}] {}签到异常: {}", jobEnum.getDesc(), u.getUsername(), e.getMessage());
+                    throw e;
+                }
+                break;
+            }
+
+            // IIOS
+            case IIOS: {
+                SysUserConfig config = userConfigService.getConfigByUserId(u.getId(), SysUseConfigEnum.SIGNIN_CFG_IIOS.getKey());
+                if (Objects.isNull(config)) {
+                    omsLogger.debug("[{}] {}未配置iios", jobEnum.getDesc(), u.getUsername());
+                    throw new UserConfigNotFountException();
+                }
+                try {
+                    Map<String, String> iiosCfg = JsonUtils.parseObject(config.getValue(), Map.class);
+                    R<String> iiosRet = signInService.iios(iiosCfg.get("email"), iiosCfg.get("password"));
+                    omsLogger.info("[{}] {}签到成功，结果: {}", jobEnum.getDesc(), u.getUsername(), iiosRet.getMsg());
+                } catch (Exception e) {
+                    omsLogger.warn("[{}] {}签到异常: {}", jobEnum.getDesc(), u.getUsername(), e.getMessage());
+                    throw e;
+                }
+                break;
+            }
+
             default: {
                 return;
             }

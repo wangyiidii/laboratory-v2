@@ -18,7 +18,10 @@ import java.util.Arrays;
 public enum DailySignInJobEnum implements IEnum {
 
     TENCENT_VIDEO("腾讯视频"),
-    DINGDONG("叮咚买菜");
+    DINGDONG("叮咚买菜"),
+    EVER_PHOTO("时光相册"),
+    IIOS("iiios"),
+    ;
 
     private String desc;
 

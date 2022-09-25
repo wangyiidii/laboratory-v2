@@ -2,7 +2,9 @@ package cn.yiidii.apiplatform.service;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.Header;
@@ -16,12 +18,16 @@ import cn.yiidii.apiplatform.model.dto.EverPhotoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.dto.TencentVideoSignInResponseDTO;
 import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.base.exception.BizException;
+import cn.yiidii.base.util.DesensitizedUtil;
 import cn.yiidii.base.util.JsonUtils;
+import cn.yiidii.base.util.LabFileUtil;
+import cn.yiidii.web.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -199,8 +205,8 @@ public class SignInService {
     /**
      * 叮咚买菜签到
      *
-     * @param cookie    cookie
-     * @return  {@link DingDongSignInResponseDTO}
+     * @param cookie cookie
+     * @return {@link DingDongSignInResponseDTO}
      */
     public DingDongSignInResponseDTO dingDong(String cookie) {
         HttpResponse response = HttpRequest.get("https://maicai.api.ddxq.mobi/point/home?station_id=0")
@@ -220,6 +226,44 @@ public class SignInService {
             }
             default: {
                 throw new BizException(signRet.getMsg());
+            }
+        }
+    }
+
+    /**
+     * iios签到
+     *
+     * @param email    邮箱地址
+     * @param password 密码
+     * @return  R
+     */
+    public R<String> iios(String email, String password) {
+        Assert.isTrue(StrUtil.isNotBlank(email), "email不能为空");
+        Assert.isTrue(Validator.isEmail(email), "email格式不正确");
+        Assert.isTrue(StrUtil.isNotBlank(password), "password不能为空");
+
+        Process process = null;
+        try {
+
+            // 调用python签到
+            File iiosPy = LabFileUtil.getVarFileFromClassPath("/script/iios.py", false);
+            process = RuntimeUtil.exec(StrUtil.format("python {} -e {} -p {}", iiosPy.getAbsolutePath(), email, password));
+
+            // code
+            int code = process.waitFor();
+            if (code != 0) {
+                String errRet = RuntimeUtil.getErrorResult(process);
+                log.warn("iios签到异常, code: {}, err result: {}, email: {}", code, errRet, DesensitizedUtil.email(email));
+                throw new BizException("服务器内部错误");
+            }
+            String result = RuntimeUtil.getResult(process).trim();
+
+            return R.ok(null, result);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (Objects.nonNull(process)) {
+                RuntimeUtil.destroy(process);
             }
         }
     }

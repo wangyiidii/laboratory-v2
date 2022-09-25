@@ -91,7 +91,6 @@ public class TextController {
             throw new RuntimeException(e);
         } finally {
             if (Objects.nonNull(tempFile)) {
-                System.err.println("删除: " + tempFile.getAbsolutePath());
                 FileUtil.del(tempFile);
             }
             if (Objects.nonNull(process)) {

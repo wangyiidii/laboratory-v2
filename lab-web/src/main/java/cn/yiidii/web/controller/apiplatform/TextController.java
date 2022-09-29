@@ -4,15 +4,16 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.UnicodeUtil;
-import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.apiplatform.model.body.FileBody;
 import cn.yiidii.base.annotation.RateLimiter;
+import cn.yiidii.base.domain.dto.ProcessResultDTO;
 import cn.yiidii.base.exception.BizException;
 import cn.yiidii.base.util.JsonUtils;
 import cn.yiidii.base.util.LabFileUtil;
+import cn.yiidii.base.util.ProcessUtil;
 import cn.yiidii.web.R;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,6 @@ public class TextController {
 
         // 临时图片文件，用完删除
         File tempFile = null;
-        Process process = null;
         try {
             tempFile = FileUtil.createTempFile(".png", true);
 
@@ -71,20 +71,16 @@ public class TextController {
 
             // 调用python ddddorc识别
             File ddddocrPy = LabFileUtil.getVarFileFromClassPath("/script/captcha_recognize.py", false);
-            process = RuntimeUtil.exec(StrUtil.format("python {} -p {}", ddddocrPy.getAbsolutePath(), tempFile.getAbsolutePath()));
+            String cmd = StrUtil.format("python {} -p {}", ddddocrPy.getAbsolutePath(), tempFile.getAbsolutePath());
+            ProcessResultDTO<String> ret = ProcessUtil.execForStr(cmd);
 
-            // code 0成功 1文件路径为空 2文件不存在
-            int code = process.waitFor();
-            if (code != 0) {
-                String errRet = RuntimeUtil.getErrorResult(process);
-                log.warn("验证码识别异常, code: {}, err result: {}, base64: {}", code, errRet, base64);
-                throw new BizException("服务器内部错误");
+            if (ret.getCode() != 0) {
+                throw new BizException(ret.getMessage());
             }
-            String result = RuntimeUtil.getResult(process).trim();
 
             // 返回
             HashMap<String, String> retData = Maps.newHashMap();
-            retData.put("text", result);
+            retData.put("text", ret.getResult());
 
             return R.ok(retData);
         } catch (Exception e) {
@@ -93,9 +89,6 @@ public class TextController {
             if (Objects.nonNull(tempFile)) {
                 FileUtil.del(tempFile);
             }
-            if (Objects.nonNull(process)) {
-                RuntimeUtil.destroy(process);
-            }
         }
     }
 
@@ -103,8 +96,8 @@ public class TextController {
     /**
      * 文字转emoji
      *
-     * @param text  text
-     * @param mode  mode
+     * @param text text
+     * @param mode mode
      * @return emoji
      */
     private String emojiConvert(String text, Integer mode) {

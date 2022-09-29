@@ -2,7 +2,7 @@ package cn.yiidii.apiplatform.support;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.util.RuntimeUtil;
+import cn.yiidii.base.util.ProcessUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -36,7 +36,8 @@ public class ApplicationInit implements ApplicationRunner {
 
     private void checkPython() {
         try {
-            String version = RuntimeUtil.execForStr("python --version").replace("Python", "").trim();
+            String version = ProcessUtil.execForStr("python --version")
+                    .getResult().replace("Python", "").trim();
             log.info("检测到已安装Python, 版本: {}", version);
         } catch (IORuntimeException e) {
             log.warn("检测到未安装Python");

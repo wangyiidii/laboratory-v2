@@ -12,6 +12,7 @@
         <module>lab-web</module>
         <module>lab-api-platform</module>
         <module>lab-job</module>
+        <module>lab-other</module>
     </modules>
 
     <properties>
@@ -55,6 +56,11 @@
             <dependency>
                 <groupId>cn.yidii</groupId>
                 <artifactId>lab-job</artifactId>
+                <version>${lab.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.yidii</groupId>
+                <artifactId>lab-other</artifactId>
                 <version>${lab.version}</version>
             </dependency>
         </dependencies>

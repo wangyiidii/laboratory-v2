@@ -27,6 +27,10 @@
             <groupId>cn.yidii</groupId>
             <artifactId>lab-job</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.yidii</groupId>
+            <artifactId>lab-other</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,5 +66,14 @@
                 </executions>
             </plugin>
         </plugins>
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/java</directory>-->
+<!--                <includes>-->
+<!--                    <include>**/*.xml</include>-->
+<!--                </includes>-->
+<!--                <filtering>false</filtering>-->
+<!--            </resource>-->
+<!--        </resources>-->
     </build>
 </project>

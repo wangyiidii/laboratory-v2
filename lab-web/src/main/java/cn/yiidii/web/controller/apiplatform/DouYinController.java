@@ -47,13 +47,14 @@ public class DouYinController {
      *
      * @param s   分享链接或者短链
      * @param raw 是否返回原始响应
-     * @return
+     * @return {@link VideoParseResponseDTO}
      */
     @GetMapping("/parse")
-    public R<?> parse(@RequestParam String s, @RequestParam(defaultValue = "0") Integer raw) {
-        s = ReUtil.getGroup0("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]", s);
+    public R<?> parse(@RequestParam String s,
+                      @RequestParam(defaultValue = "0") Integer raw) {
+
         if (StrUtil.isBlank(s)) {
-            throw new BizException("链接不正确~");
+            throw new IllegalArgumentException("参数[s]必传且不为空");
         }
 
         VideoParseResponseDTO dto = doParse(s);
@@ -65,6 +66,20 @@ public class DouYinController {
     }
 
     private VideoParseResponseDTO doParse(String url) {
+
+        // 提取短链
+        url = ReUtil.getGroup0("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?", url);
+
+        // 如果有19位房间id就先处理直播
+        String roomId = ReUtil.getGroup0("\\d{19}", url);
+        if (StrUtil.isNotBlank(roomId)) {
+            try {
+                return parseLiveByRoomId(roomId);
+            } catch (Exception ex) {
+                // ignored
+            }
+        }
+
         VideoParseResponseDTO dto;
         try {
             // 先解析视频
@@ -86,7 +101,7 @@ public class DouYinController {
      * 解析 短视频/图文
      *
      * @param url url
-     * @return
+     * @return {@link VideoParseResponseDTO}
      */
     private VideoParseResponseDTO parseVideo(String url) {
         // 先获取itemId
@@ -138,11 +153,22 @@ public class DouYinController {
      * 解析直播
      *
      * @param url url
-     * @return
+     * @return {@link VideoParseResponseDTO}
      */
     private VideoParseResponseDTO parseLive(String url) {
         String loc = HttpRequest.get(url).execute().header(Header.LOCATION);
         String roomId = ReUtil.getGroup0("\\d{19}", loc);
+        return parseLiveByRoomId(roomId);
+    }
+
+
+    /**
+     * 解析直播
+     *
+     * @param roomId roomId
+     * @return {@link VideoParseResponseDTO}
+     */
+    private VideoParseResponseDTO parseLiveByRoomId(String roomId) {
 
         JSONObject rawData = null;
         for (int i = 0; i < MAX_TIME; i++) {
@@ -163,8 +189,14 @@ public class DouYinController {
         String title = room.getString("title");
         JSONObject streamUrl = room.getJSONObject("stream_url");
         String hlsPullUrl = streamUrl.getString("hls_pull_url");
+        String cover = room.getJSONObject("cover").getJSONArray("url_list").getString(0);
 
-        return VideoParseResponseDTO.builder().type(VideoParseResponseDTO.LIVE).nickname(nickname).title(title).urls(Lists.newArrayList(hlsPullUrl)).raw(rawData).build();
+        return VideoParseResponseDTO.builder()
+                .type(VideoParseResponseDTO.LIVE)
+                .nickname(nickname)
+                .title(title)
+                .cover(cover)
+                .urls(Lists.newArrayList(hlsPullUrl)).raw(rawData).build();
     }
 
 

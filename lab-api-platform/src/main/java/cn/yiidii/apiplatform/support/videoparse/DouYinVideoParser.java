@@ -1,4 +1,4 @@
-package cn.yiidii.web.controller.apiplatform;
+package cn.yiidii.apiplatform.support.videoparse;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReUtil;
@@ -7,69 +7,35 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.apiplatform.model.dto.VideoParseResponseDTO;
+import cn.yiidii.apiplatform.support.VideoParser;
+import cn.yiidii.apiplatform.util.Util;
 import cn.yiidii.base.exception.BizException;
-import cn.yiidii.web.R;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * DouyinController
+ * 抖音视频解析
  *
  * @author ed w
  * @since 1.0
  */
-@Slf4j
-@RestController
-@RequestMapping("/dy")
-@RequiredArgsConstructor
-public class DouYinController {
+@Service("dyVideoParser")
+public class DouYinVideoParser implements VideoParser {
 
     private static final int MAX_TIME = 20;
-    private static final String MOBILE_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
     private static final String DY_VIDEO_PATH = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=";
 
-    /**
-     * 抖音解析
-     * 支持 短视频/图文/直播
-     *
-     * @param s   分享链接或者短链
-     * @param raw 是否返回原始响应
-     * @return {@link VideoParseResponseDTO}
-     */
-    @GetMapping("/parse")
-    public R<?> parse(@RequestParam String s,
-                      @RequestParam(defaultValue = "0") Integer raw) {
-
-        if (StrUtil.isBlank(s)) {
-            throw new IllegalArgumentException("参数[s]必传且不为空");
-        }
-
-        VideoParseResponseDTO dto = doParse(s);
-        if (raw == 0) {
-            dto.setRaw(null);
-        }
-
-        return R.ok(dto, "解析成功");
-    }
-
-    private VideoParseResponseDTO doParse(String url) {
-
-        // 提取短链
-        url = ReUtil.getGroup0("(((ht|f)tps?):\\/\\/)?[\\w-]+(\\.[\\w-]+)+([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?", url);
-
+    @Override
+    public VideoParseResponseDTO parse(String s) {
+        String url = Util.getUrl(s);
         // 如果有19位房间id就先处理直播
         String roomId = ReUtil.getGroup0("\\d{19}", url);
         if (StrUtil.isNotBlank(roomId)) {
@@ -93,9 +59,9 @@ public class DouYinController {
                 throw new BizException("解析异常，换个链接试试吧~");
             }
         }
-
         return dto;
     }
+
 
     /**
      * 解析 短视频/图文
@@ -198,6 +164,4 @@ public class DouYinController {
                 .cover(cover)
                 .urls(Lists.newArrayList(hlsPullUrl)).raw(rawData).build();
     }
-
-
 }

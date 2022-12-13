@@ -1,5 +1,6 @@
-package cn.yiidii.web.controller.apiplatform;
+package cn.yiidii.apiplatform.support.videoparse;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.ContentType;
@@ -7,57 +8,34 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.apiplatform.model.dto.VideoParseResponseDTO;
+import cn.yiidii.apiplatform.support.VideoParser;
 import cn.yiidii.base.core.service.ConfigService;
-import cn.yiidii.web.R;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * KuaiShouController
+ * 快手视频解析
  *
  * @author ed w
  * @since 1.0
  */
-@Slf4j
-@RestController
-@RequestMapping("/ks")
+@Service("ksVideoParser")
 @RequiredArgsConstructor
-public class KuaiShouController {
+public class KuaiShouVideoParser implements VideoParser {
 
     private final ConfigService configService;
 
-    /**
-     * 快手解析
-     * 支持 短视频/图文/直播
-     *
-     * @param s   分享链接或者短链
-     * @param raw 是否返回原始响应
-     * @return {@link VideoParseResponseDTO}
-     */
-    @GetMapping("/parse")
-    public R<?> parse(@RequestParam String s, @RequestParam(defaultValue = "0") Integer raw) {
-        if (StrUtil.isBlank(s)) {
-            throw new IllegalArgumentException("参数[s]必传且不为空");
-        }
-        VideoParseResponseDTO dto = doParse(s);
-        if (raw == 0) {
-            dto.setRaw(null);
-        }
-
-        return R.ok(dto, "解析成功");
-    }
-
-    private VideoParseResponseDTO doParse(String s) {
+    @Override
+    public VideoParseResponseDTO parse(String s) {
         // 提取短连
         s = ReUtil.getGroup0("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]", s);
+
+        Assert.isTrue(StrUtil.isNotBlank(s), "请检查链接是否正确~");
+
         // 解析
         return parseVideo(s);
     }

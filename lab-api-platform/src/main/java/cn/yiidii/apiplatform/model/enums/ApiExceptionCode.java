@@ -16,6 +16,7 @@ public enum ApiExceptionCode implements BaseExceptionCode {
     ALREADY_SIGN_IN(200002, "今日已签到"),
     UN_TENCENT_VIP(200003, "不是vip会员"),
     COOKIE_EXPIRED_LT(200004, "用户异地登录，请重新尝试登录手厅"),
+    VIDEO_PLATFORM_NOT_SUPPORT(200005, "暂未支持该平台"),
 
     ;
 

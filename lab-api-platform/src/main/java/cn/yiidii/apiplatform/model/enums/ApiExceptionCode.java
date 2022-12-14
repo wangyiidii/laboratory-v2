@@ -16,12 +16,13 @@ public enum ApiExceptionCode implements BaseExceptionCode {
     ALREADY_SIGN_IN(200002, "今日已签到"),
     UN_TENCENT_VIP(200003, "不是vip会员"),
     COOKIE_EXPIRED_LT(200004, "用户异地登录，请重新尝试登录手厅"),
-    VIDEO_PLATFORM_NOT_SUPPORT(200005, "暂未支持该平台"),
+    VIDEO_PARSE_PLATFORM_NOT_SUPPORT(200005, "暂未支持该平台"),
+    VIDEO_PARSE_EXCEPTION(200006, "解析异常，请检查链接是否正确"),
 
     ;
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 
     @Override
     public int getCode() {

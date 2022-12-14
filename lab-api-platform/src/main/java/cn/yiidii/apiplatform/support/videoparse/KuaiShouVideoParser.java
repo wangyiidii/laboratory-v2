@@ -8,14 +8,18 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.apiplatform.model.dto.VideoParseResponseDTO;
+import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.apiplatform.support.VideoParser;
 import cn.yiidii.base.core.service.ConfigService;
+import cn.yiidii.base.exception.BizException;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 快手视频解析
@@ -37,7 +41,20 @@ public class KuaiShouVideoParser implements VideoParser {
         Assert.isTrue(StrUtil.isNotBlank(s), "请检查链接是否正确~");
 
         // 解析
-        return parseVideo(s);
+        return this.doParse(s);
+    }
+
+    private VideoParseResponseDTO doParse(String url) {
+        HttpResponse resp = HttpRequest.get(url)
+                .execute();
+        String loc = resp.header(Header.LOCATION.getValue());
+        if (loc.contains("/long-video/")) {
+            return this.parseVideo(url);
+        } else if (loc.contains("/live/")) {
+            return this.parseLive(url);
+        } else {
+            throw new BizException(ApiExceptionCode.VIDEO_PARSE_EXCEPTION);
+        }
     }
 
     private VideoParseResponseDTO parseVideo(String url) {
@@ -88,6 +105,45 @@ public class KuaiShouVideoParser implements VideoParser {
                 .cover(cover)
                 .urls(urlList)
                 .raw(resJo)
+                .build();
+    }
+
+    private VideoParseResponseDTO parseLive(String url) {
+        HttpResponse resp = HttpRequest.get(url)
+                .execute();
+        String loc = resp.header(Header.LOCATION.getValue());
+
+        // 获取id
+        String tmp = loc.substring(0, loc.indexOf("?"));
+        String eid = tmp.substring(tmp.lastIndexOf("/") + 1);
+
+        Map<String, ? extends Serializable> body = Map.of(
+                "clientType", "WEB_OUTSIDE_SHARE_H5",
+                "eid", eid,
+                "shareMethod", "card",
+                "source", 6
+        );
+        resp = HttpRequest.post("https://c.kuaishou.com/rest/k/live/byUser?kpn=KUAISHOU")
+                .body(JSONObject.toJSONString(body))
+                .header(Header.REFERER, loc)
+                .execute();
+        JSONObject respJo = JSONObject.parseObject(resp.body());
+
+        JSONObject liveStreamJo = respJo.getJSONObject("liveStream");
+        String cover = liveStreamJo.getString("coverSafeUrl");
+        String title = liveStreamJo.getString("caption");
+        String hlsPlayUrl = liveStreamJo.getString("hlsPlayUrl");
+
+        JSONObject userJo = liveStreamJo.getJSONObject("user");
+        String username = userJo.getString("user_name");
+
+        return VideoParseResponseDTO.builder()
+                .type(VideoParseResponseDTO.LIVE)
+                .nickname(username)
+                .title(title)
+                .cover(cover)
+                .urls(Lists.newArrayList(hlsPlayUrl))
+                .raw(respJo)
                 .build();
     }
 }

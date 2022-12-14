@@ -1,6 +1,5 @@
 package cn.yiidii.apiplatform.model.enums;
 
-import cn.hutool.core.util.StrUtil;
 import cn.yiidii.base.domain.enums.IEnum;
 import cn.yiidii.base.exception.BizException;
 import com.google.common.collect.Lists;
@@ -42,6 +41,6 @@ public enum VideoParsePlatformEnum implements IEnum<String> {
         return Arrays.stream(values())
                 .filter(t -> t.getDomains().contains(domain))
                 .findAny()
-                .orElseThrow(() -> new BizException(ApiExceptionCode.VIDEO_PLATFORM_NOT_SUPPORT));
+                .orElseThrow(() -> new BizException(ApiExceptionCode.VIDEO_PARSE_PLATFORM_NOT_SUPPORT));
     }
 }

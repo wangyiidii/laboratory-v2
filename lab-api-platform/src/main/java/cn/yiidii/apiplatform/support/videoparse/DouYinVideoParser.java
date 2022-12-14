@@ -7,6 +7,7 @@ import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.yiidii.apiplatform.model.dto.VideoParseResponseDTO;
+import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.apiplatform.support.VideoParser;
 import cn.yiidii.apiplatform.util.Util;
 import cn.yiidii.base.exception.BizException;
@@ -56,7 +57,7 @@ public class DouYinVideoParser implements VideoParser {
                 dto = parseLive(url);
             } catch (Exception ex) {
                 // 异常
-                throw new BizException("解析异常，换个链接试试吧~");
+                throw new BizException(ApiExceptionCode.VIDEO_PARSE_EXCEPTION);
             }
         }
         return dto;

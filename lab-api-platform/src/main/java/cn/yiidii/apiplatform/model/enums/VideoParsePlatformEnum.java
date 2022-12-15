@@ -21,6 +21,7 @@ public enum VideoParsePlatformEnum implements IEnum<String> {
 
     DOUYIN("dy", "抖音", Lists.newArrayList("v.douyin.com")),
     KUAISHOU("ks", "快手", Lists.newArrayList("v.kuaishou.com")),
+    BILIBLI("bilibili", "哔哩哔哩", Lists.newArrayList("bilibili.com", "www.bilibili.com")),
     ;
 
     private final String code;

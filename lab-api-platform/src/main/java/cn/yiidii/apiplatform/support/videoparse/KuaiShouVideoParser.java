@@ -48,7 +48,7 @@ public class KuaiShouVideoParser implements VideoParser {
         HttpResponse resp = HttpRequest.get(url)
                 .execute();
         String loc = resp.header(Header.LOCATION.getValue());
-        if (loc.contains("/long-video/")) {
+        if (StrUtil.containsAny(loc,"/long-video/", "/photo/")) {
             return this.parseVideo(url);
         } else if (loc.contains("/live/")) {
             return this.parseLive(url);

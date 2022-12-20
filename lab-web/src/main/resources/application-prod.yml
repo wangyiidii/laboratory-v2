@@ -20,16 +20,6 @@ spring:
         max-idle: 10
         min-idle: 0
 
-powerjob:
-  worker:
-    akka-port: 27777
-    app-name: lab-v2-dev
-    server-address: 127.0.0.1:7700
-    store-strategy: disk
-    max-result-length: 4096
-    max-appended-wf-context-length: 4096
-
-
 #redisson:
 #  # redis key前缀
 #  keyPrefix:

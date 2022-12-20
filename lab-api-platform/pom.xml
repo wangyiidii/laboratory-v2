@@ -30,17 +30,6 @@
         </dependency>
 
         <dependency>
-            <groupId>tech.powerjob</groupId>
-            <artifactId>powerjob-worker-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>

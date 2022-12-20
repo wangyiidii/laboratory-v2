@@ -11,8 +11,6 @@
         <module>lab-system</module>
         <module>lab-web</module>
         <module>lab-api-platform</module>
-        <module>lab-job</module>
-        <module>lab-other</module>
     </modules>
 
     <properties>
@@ -27,9 +25,8 @@
             <artifactId>hutool-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 

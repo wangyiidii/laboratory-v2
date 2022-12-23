@@ -1,6 +1,6 @@
 package cn.yiidii.apiplatform.support.videoparse;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.Header;
@@ -16,8 +16,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,7 +34,6 @@ import java.util.stream.Collectors;
 public class DouYinVideoParser implements VideoParser {
 
     private static final int MAX_TIME = 20;
-    private static final String DY_VIDEO_PATH = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=";
 
     @Override
     public VideoParseResponseDTO parse(String s) {
@@ -71,21 +72,23 @@ public class DouYinVideoParser implements VideoParser {
      * @return {@link VideoParseResponseDTO}
      */
     private VideoParseResponseDTO parseVideo(String url) {
-        // 先获取itemId
-        HttpResponse res = HttpRequest.get(url).header(Header.USER_AGENT, MOBILE_UA).execute();
-        url = Jsoup.parse(res.body()).getElementsByTag("a").attr("href");
-        String itemId = url.substring(url.indexOf("video/"), url.lastIndexOf("/")).replace("video/", "");
+        // 请求短链，获取重定向地址
+        HttpResponse res = HttpRequest.get(url)
+                .execute();
+        String loc = res.header(Header.LOCATION);
 
-        // 再去解析
-        res = HttpRequest.get(DY_VIDEO_PATH + itemId).header(Header.USER_AGENT, MOBILE_UA).execute();
-        JSONObject resJo = JSONObject.parseObject(res.body());
-        JSONArray itemList = resJo.getJSONArray("item_list");
-        if (CollUtil.isEmpty(itemList)) {
-            throw new BizException("itemlist");
-        }
+        // 请求重定向地址，获取html并解析
+        res = HttpRequest.get(loc)
+                .header(Header.USER_AGENT, "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1")
+                .execute();
+        Document document = Jsoup.parse(res.body());
+        String renderData = document.getElementsByAttributeValue("id", "RENDER_DATA").get(0).html();
+        renderData = URLDecoder.decode(renderData, StandardCharsets.UTF_8);
+        JSONObject renderDataJo = JSONObject.parseObject(renderData);
 
-        // item信息
-        JSONObject info = itemList.getJSONObject(0);
+        JSONObject videoInfoRefs = renderDataJo.getJSONObject("app").getJSONObject("videoInfoRes");
+        JSONObject info = videoInfoRefs.getJSONArray("item_list").getJSONObject(0);
+
         // 作者基本信息
         JSONObject author = info.getJSONObject("author");
         String nickname = author.getString("nickname");

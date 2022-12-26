@@ -10,11 +10,13 @@ import cn.yiidii.apiplatform.model.dto.VideoParseResponseDTO;
 import cn.yiidii.apiplatform.model.enums.ApiExceptionCode;
 import cn.yiidii.apiplatform.support.VideoParser;
 import cn.yiidii.apiplatform.util.Util;
+import cn.yiidii.base.core.service.ConfigService;
 import cn.yiidii.base.exception.BizException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
@@ -31,9 +33,11 @@ import java.util.stream.Collectors;
  * @since 1.0
  */
 @Service("dyVideoParser")
+@RequiredArgsConstructor
 public class DouYinVideoParser implements VideoParser {
 
     private static final int MAX_TIME = 20;
+    private final ConfigService configService;
 
     @Override
     public VideoParseResponseDTO parse(String s) {
@@ -72,6 +76,9 @@ public class DouYinVideoParser implements VideoParser {
      * @return {@link VideoParseResponseDTO}
      */
     private VideoParseResponseDTO parseVideo(String url) {
+        // 抖音cookie
+        String cookie = configService.get("douyin_cookie", "");
+
         // 请求短链，获取重定向地址
         HttpResponse res = HttpRequest.get(url)
                 .execute();
@@ -79,6 +86,7 @@ public class DouYinVideoParser implements VideoParser {
 
         // 请求重定向地址，获取html并解析
         res = HttpRequest.get(loc)
+                .cookie(cookie)
                 .header(Header.USER_AGENT, "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1")
                 .execute();
         Document document = Jsoup.parse(res.body());

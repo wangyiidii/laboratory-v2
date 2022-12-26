@@ -24,6 +24,7 @@ public class VideoParseResponseDTO {
     private String title;
     private String cover;
     private List<String> urls;
+    private List<String> audioUrls;
     private Object raw;
 
 

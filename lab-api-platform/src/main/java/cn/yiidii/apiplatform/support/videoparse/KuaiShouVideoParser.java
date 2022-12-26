@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 快手视频解析
@@ -48,7 +49,7 @@ public class KuaiShouVideoParser implements VideoParser {
         HttpResponse resp = HttpRequest.get(url)
                 .execute();
         String loc = resp.header(Header.LOCATION.getValue());
-        if (StrUtil.containsAny(loc,"/long-video/", "/photo/")) {
+        if (StrUtil.containsAny(loc, "/long-video/", "/photo/")) {
             return this.parseVideo(url);
         } else if (loc.contains("/live/")) {
             return this.parseLive(url);
@@ -97,6 +98,13 @@ public class KuaiShouVideoParser implements VideoParser {
         JSONObject photoJo = resJo.getJSONObject("photo");
         String userName = photoJo.getString("userName");
         String cover = photoJo.getJSONArray("webpCoverUrls").getJSONObject(0).getString("url");
+        // 音频
+        String audioKey = isImg ? "music" : "soundTrack";
+        List<String> audioUrls = photoJo.getJSONObject(audioKey).getJSONArray("audioUrls").stream()
+                .map(e -> {
+                    JSONObject j = (JSONObject) e;
+                    return j.getString("url");
+                }).collect(Collectors.toList());
 
         return VideoParseResponseDTO.builder()
                 .type(!isImg ? VideoParseResponseDTO.VIDEO : VideoParseResponseDTO.IMAGE)
@@ -104,6 +112,7 @@ public class KuaiShouVideoParser implements VideoParser {
                 .title(title)
                 .cover(cover)
                 .urls(urlList)
+                .audioUrls(audioUrls)
                 .raw(resJo)
                 .build();
     }

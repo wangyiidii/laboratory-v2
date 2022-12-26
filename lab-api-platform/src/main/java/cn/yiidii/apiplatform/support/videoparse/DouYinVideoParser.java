@@ -116,7 +116,18 @@ public class DouYinVideoParser implements VideoParser {
             }).collect(Collectors.toList());
         }
 
-        return VideoParseResponseDTO.builder().type(isVideo ? VideoParseResponseDTO.VIDEO : VideoParseResponseDTO.IMAGE).nickname(nickname).title(desc).cover(cover).urls(urlList).raw(info).build();
+        // 音频
+        List<String> audioUrls = info.getJSONObject("music").getJSONObject("play_url").getJSONArray("url_list").toJavaList(String.class);
+
+        return VideoParseResponseDTO.builder()
+                .type(isVideo ? VideoParseResponseDTO.VIDEO : VideoParseResponseDTO.IMAGE)
+                .nickname(nickname)
+                .title(desc)
+                .cover(cover)
+                .urls(urlList)
+                .audioUrls(audioUrls)
+                .raw(info)
+                .build();
     }
 
     /**

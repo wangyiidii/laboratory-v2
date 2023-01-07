@@ -2,20 +2,13 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>laboratory-v2</artifactId>
+        <artifactId>lab-api-platform</artifactId>
         <groupId>cn.yiidii</groupId>
         <version>1.0.0</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>api-platform-api</artifactId>
 
-    <artifactId>lab-api-platform</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>api-platform-api</module>
-        <module>api-platform-biz</module>
-    </modules>
 
 </project>

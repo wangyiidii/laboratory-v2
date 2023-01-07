@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.43.21:8848
+        username: lab-dev
+        password: lab-dev
+        namespace: lab-dev
+        shared-configs:
+          - data-id: system-server.yml
+            refresh: false
+          - data-id: mysql.yml
+            refresh: false
+#          - data-id: redis.yml
+#            refresh: false
+          - data-id: sa-token.yml
+            refresh: false
+      discovery:
+        server-addr: 192.168.43.21:8848
+        username: lab-dev
+        password: lab-dev
+        namespace: lab-dev

@@ -2,15 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cn.yidii</groupId>
+
+    <groupId>cn.yiidii</groupId>
     <artifactId>laboratory-v2</artifactId>
-    <packaging>pom</packaging>
+
     <version>1.0.0</version>
+    <packaging>pom</packaging>
 
     <modules>
         <module>lab-system</module>
-        <module>lab-web</module>
         <module>lab-api-platform</module>
+        <module>lab-gateway</module>
+        <module>lab-common</module>
     </modules>
 
     <properties>
@@ -41,23 +44,13 @@
             </dependency>
 
             <dependency>
-                <groupId>cn.yidii</groupId>
+                <groupId>cn.yiidii.lab</groupId>
                 <artifactId>lab-system</artifactId>
                 <version>${lab.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.yidii</groupId>
                 <artifactId>lab-api-platform</artifactId>
-                <version>${lab.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.yidii</groupId>
-                <artifactId>lab-job</artifactId>
-                <version>${lab.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.yidii</groupId>
-                <artifactId>lab-other</artifactId>
                 <version>${lab.version}</version>
             </dependency>
         </dependencies>
@@ -95,27 +88,5 @@
             </resource>
         </resources>
     </build>
-
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <!-- 环境标识，需要与配置文件的名称相对应 -->
-                <profiles.active>dev</profiles.active>
-                <logging.level>debug</logging.level>
-            </properties>
-            <activation>
-                <!-- 默认环境 -->
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <profiles.active>prod</profiles.active>
-                <logging.level>warn</logging.level>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>

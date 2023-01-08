@@ -45,7 +45,7 @@
 
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>lab-system</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

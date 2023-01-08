@@ -24,7 +24,6 @@ import java.util.Map;
  * @since 1.0
  */
 @RestController
-@SaCheckLogin
 @RequestMapping("/config")
 @RequiredArgsConstructor
 public class ConfigController {
@@ -32,19 +31,8 @@ public class ConfigController {
     private final ConfigService configService;
 
     @GetMapping("")
-    @SaCheckPermission("xx")
     public String getConfig(@RequestParam String key, @RequestParam String dft) {
-        Map<String, AuthExceptionHandler> beansOfType = SpringUtil.getBeansOfType(AuthExceptionHandler.class);
         return configService.get(key, dft);
     }
-
-    @GetMapping("redis")
-    public R<?> redis() {
-        RedisUtils.setCacheObject("test", "test" + System.currentTimeMillis());
-
-        Object ss = RedisUtils.getCacheObject("test");
-        return R.ok(ss);
-    }
-
 
 }

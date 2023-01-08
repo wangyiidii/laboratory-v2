@@ -7,20 +7,17 @@ import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.yiidii.lab.apiplatform.model.body.FileBody;
+import cn.yiidii.base.R;
 import cn.yiidii.base.annotation.RateLimiter;
 import cn.yiidii.base.domain.dto.ProcessResultDTO;
 import cn.yiidii.base.exception.BizException;
 import cn.yiidii.base.util.JsonUtils;
 import cn.yiidii.base.util.LabFileUtil;
 import cn.yiidii.base.util.ProcessUtil;
-import cn.yiidii.lab.system.api.feign.ConfigFeign;
-import cn.yiidii.redis.RedisUtils;
-import cn.yiidii.base.R;
+import cn.yiidii.lab.apiplatform.model.body.FileBody;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -40,17 +37,6 @@ import java.util.Objects;
 @RequestMapping("/")
 @RequiredArgsConstructor
 public class TextController {
-
-    private final ConfigFeign configFeign;
-
-    @GetMapping("/test")
-    public R<?> test(@RequestParam String key) {
-        String val = configFeign.get(key, "xx");
-        Map<String, Object> ret = new HashMap<>();
-        ret.put("val", val);
-        ret.put("redis", RedisUtils.getCacheObject("test") );
-        return R.ok(ret);
-    }
 
     @RateLimiter(count = 1, time = 5)
     @GetMapping("/emoji-convert")

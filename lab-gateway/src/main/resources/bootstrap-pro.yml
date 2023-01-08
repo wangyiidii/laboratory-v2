@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.43.21:8848
+        username: lab
+        password: lab
+        namespace: lab
+        shared-configs:
+          - data-id: gateway-server.yml
+            refresh: false
+      discovery:
+        server-addr: 192.168.43.21:8848
+        username: lab
+        password: lab
+        namespace: lab
